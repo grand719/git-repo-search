@@ -1,24 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useCallback, useRef } from 'react';
+import useQuery from './hooks/useQuery';
 
-function App() {
+import './App.css'
+
+import { Repository } from './components/Repository';
+import { RepositoryForm } from './components/RepositoryForm';
+
+
+function App(){
+  const [params, setParams] = useState({repoName: '', reposNumber: 10})
+  const {repos, loading, error} = useQuery(params)
+  const [isMore, setIsMore] = useState(true)
+
+  const searchRepo = (repoName: string) => {
+    setParams({reposNumber: 10, repoName: repoName})
+  }
+  const observer: any = useRef(null)
+
+  const lastRepoRef = useCallback( node => {
+      if(loading) return 
+      if(observer.current) observer.current.disconnect()
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && params.reposNumber <= 100) {
+          setParams({...params, reposNumber: params.reposNumber + 10})
+        }
+      })
+      if(node) observer.current.observe(node)
+  }, [loading, isMore])
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>GitHub Repository</h1>
+
+      <RepositoryForm onSearchChange = {searchRepo} />
+       
+       {repos.length === 0 && <h2>No repositories found</h2>}
+       {repos.map((repoE: any, index: number) => {
+        if(repos.length === index+ 1) {
+          return <Repository innerRef={lastRepoRef} key={repoE.repo.id} {...repoE.repo} />
+        }else {
+
+          return <Repository key={repoE.repo.id} {...repoE.repo} />
+        }
+       })}
+       {loading && <h1>Loading...</h1> }
     </div>
   );
 }
