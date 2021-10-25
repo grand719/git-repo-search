@@ -23,6 +23,7 @@ function App(){
       observer.current = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && params.reposNumber <= 100) {
           setParams({...params, reposNumber: params.reposNumber + 10})
+          console.log(repos.length)
         }
       })
       if(node) observer.current.observe(node)
@@ -34,7 +35,7 @@ function App(){
       <h1>GitHub Repository</h1>
 
       <RepositoryForm onSearchChange = {searchRepo} />
-       
+       {error && <h1>Error</h1>}
        {repos.length === 0 && <h2>No repositories found</h2>}
        {repos.map((repoE: any, index: number) => {
         if(repos.length === index+ 1) {

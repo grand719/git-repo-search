@@ -53,7 +53,7 @@ export default function useQuery(params: {repoName: string, reposNumber: number}
 
         }).catch((e)=> {
             dispatch({type: ACTIONS.ERROR, value: {
-                error: "error"
+                error: e.message.toString()
             }})
         })
     
