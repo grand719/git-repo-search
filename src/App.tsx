@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import useQuery from './hooks/useQuery';
 
 import './App.css'
@@ -15,7 +15,18 @@ function App(){
   const searchRepo = (repoName: string) => {
     setParams({reposNumber: 10, repoName: repoName})
   }
+
   const observer: any = useRef(null)
+
+  useEffect(()=>{
+    const search = window.location.search
+    const searchValue = new URLSearchParams(search).get('repository')
+    if(searchValue) {
+
+      setParams({...params, repoName: searchValue})
+    }
+    
+  }, [])
 
   const lastRepoRef = useCallback( node => {
       if(loading) return 

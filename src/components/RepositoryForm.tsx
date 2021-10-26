@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 
 import {FaSearch} from 'react-icons/fa'
 import {TiDelete} from 'react-icons/ti'
@@ -9,18 +9,46 @@ export const RepositoryForm = (props:any) => {
     let typingTimer: any;
     const [repoName, setRepoName] = useState('')
 
+
+    useEffect(()=>{
+        const search = window.location.search
+        const searchValue = new URLSearchParams(search).get('repository')
+        if(searchValue) {
+            setRepoName(searchValue)
+        }else {
+            setRepoName('')
+        }
+
+    }, [])
+
     const onRepoNameChange = (repoNameValue: string) => {
         setRepoName(repoNameValue)   
     }
 
-    
+    const addRepoNameToUrl = (repo: string) => {
+        const url = new URL(window.location.toString())
+        url.searchParams.set("repository", repo)
+        window.history.pushState({},'', url)
+    }
+
+    const removeRepoNameFromUrl = () => {
+        const url = new URL(window.location.toString())
+        url.searchParams.delete("repository")
+        window.history.pushState({},'', url)
+    }
+
     const finishTyping = () => {
-        props.onSearchChange(repoName)
+        if(repoName.length >= 3 || repoName.length === 0) {
+            props.onSearchChange(repoName)
+            addRepoNameToUrl(repoName)
+        }
+
     }
     
-    const deleteClickHandeler = () => {
+    const deleteClickHandler = () => {
         setRepoName('')
         props.onSearchChange('')
+        removeRepoNameFromUrl()
     }
 
     const onKeyUpHandler = () => {
@@ -39,7 +67,7 @@ export const RepositoryForm = (props:any) => {
             <form>
                 <div>
                     <input type="text" placeholder="Repository name" value={repoName} onKeyUp={onKeyUpHandler} onKeyDown={onKeyDownHandler} onChange={(e) => onRepoNameChange(e.target.value)}/>
-                    {repoName.length > 0 ? <TiDelete id="search" onClick={deleteClickHandeler}/> : <FaSearch id="search"/>}
+                    {repoName.length > 0 ? <TiDelete id="search" onClick={deleteClickHandler}/> : <FaSearch id="search"/>}
                     
                 </div>
             </form>

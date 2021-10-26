@@ -14,7 +14,7 @@ export const Repository = (props: any) => {
             <div className="repository-license--wrapper"> <h3>License: </h3>{props.licenseInfo != null ? <DiMitlicence className="repository-license" /> : <CgSmileNone className="repository-license" />}</div>
             </div>
             <div className="repository-owner">
-                <h2><img src={props.owner.avatarUrl}  alt="owner-awatar" /><a href={props.owner.url} target="_blank">{props.owner.login}</a></h2>
+                <h2><img src={props.owner.avatarUrl}  alt="owner-avatar" /><a href={props.owner.url} target="_blank">{props.owner.login}</a></h2>
                 
             </div>
             
