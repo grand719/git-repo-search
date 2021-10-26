@@ -1,3 +1,5 @@
+# Token proszę umieścić w zmiennej TOKEN w pliku: git-repo-search/src/github_gql_clinet/gql_client.ts 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
